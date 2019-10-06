@@ -16,7 +16,7 @@ BATCH_SIZE = 5000
 BATCH_SIZE_Test = 10000
 
 LR = 0.01
-EPOCH = 5
+EPOCH = 10
 train_loader = DataLoader(train_set, batch_size=BATCH_SIZE, shuffle=False)
 test_loader = DataLoader(test_set, batch_size=BATCH_SIZE_Test, shuffle=False)
 classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
@@ -132,7 +132,7 @@ def train_without_closure(optimizer, msg):
 
 
 #train_without_closure(torch.optim.ASGD(cnn.parameters(), lr=LR))
-train_lbfgs(0.3, 'Use LBFGS AND LR = 0.3')
+train_lbfgs(0.1, 'Use LBFGS AND LR = 0.1')
 list_pred = []
 list_true = []
 for step, (t_x, t_y) in enumerate(test_loader):
