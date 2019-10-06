@@ -10,10 +10,11 @@ from NetWorks import CNN3, CNN4
 transform = torchvision.transforms.Compose(
     [torchvision.transforms.ToTensor(), torchvision.transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]
 )
-train_set = torchvision.datasets.CIFAR10(root='./CIFAR10', train=True, download=False, transform=transform)
-test_set = torchvision.datasets.CIFAR10(root='./CIFAR10', train=False, download=False, transform=transform)
-BATCH_SIZE = 25000
+train_set = torchvision.datasets.CIFAR10(root='./CIFAR10', train=True, download=True, transform=transform)
+test_set = torchvision.datasets.CIFAR10(root='./CIFAR10', train=False, download=True, transform=transform)
+BATCH_SIZE = 5000
 BATCH_SIZE_Test = 10000
+
 LR = 0.01
 EPOCH = 5
 train_loader = DataLoader(train_set, batch_size=BATCH_SIZE, shuffle=False)
