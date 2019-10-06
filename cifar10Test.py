@@ -12,11 +12,11 @@ transform = torchvision.transforms.Compose(
 )
 train_set = torchvision.datasets.CIFAR10(root='./CIFAR10', train=True, download=True, transform=transform)
 test_set = torchvision.datasets.CIFAR10(root='./CIFAR10', train=False, download=True, transform=transform)
-BATCH_SIZE = 5000
+BATCH_SIZE = 25000
 BATCH_SIZE_Test = 10000
 
-LR = 0.01
-EPOCH = 10
+LR = 0.05
+EPOCH = 50
 train_loader = DataLoader(train_set, batch_size=BATCH_SIZE, shuffle=False)
 test_loader = DataLoader(test_set, batch_size=BATCH_SIZE_Test, shuffle=False)
 classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
@@ -34,7 +34,7 @@ def draw(obj):
 print(len(train_set))
 print(len(test_set))
 
-cnn = CNN4()
+cnn = CNN3()
 cnn = cnn.cuda()
 print(cnn)
 
@@ -132,7 +132,7 @@ def train_without_closure(optimizer, msg):
 
 
 # train_without_closure(torch.optim.ASGD(cnn.parameters(), lr=LR))
-train_lbfgs(0.1, 'Use LBFGS AND LR = 0.1')
+train_lbfgs(1.2, 'CNN3 Use LBFGS AND LR = 1.2 EPOCH = 5')
 list_pred = []
 list_true = []
 for step, (t_x, t_y) in enumerate(test_loader):

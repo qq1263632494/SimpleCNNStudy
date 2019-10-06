@@ -20,9 +20,9 @@ class CNN3(nn.Module):
                 out_channels=12
             ),  # 12*12*12
             nn.ReLU(),
-            # nn.MaxPool2d(kernel_size=2)  # 12*6*6
+            nn.MaxPool2d(kernel_size=2)  # 12*6*6
         )
-        self.out = nn.Linear(12 * 12 * 12, 10)
+        self.out = nn.Linear(12 * 6 * 6, 10)
 
     def forward(self, x):
         x = self.conv1(x)
