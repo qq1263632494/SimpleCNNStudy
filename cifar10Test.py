@@ -34,7 +34,6 @@ def draw(obj):
 print(len(train_set))
 print(len(test_set))
 
-
 cnn = CNN4()
 cnn = cnn.cuda()
 print(cnn)
@@ -74,7 +73,7 @@ def train_lbfgs(LR, msg):
     list_y = []
     train_loader.__setattr__('shuffle', True)
     from progressbar import ShowProcess
-    bar = ShowProcess(EPOCH*len(train_set)/BATCH_SIZE)
+    bar = ShowProcess(EPOCH * len(train_set) / BATCH_SIZE)
     for t in range(EPOCH):
         for step, (b_x, b_y) in enumerate(train_loader):
             def closure():
@@ -86,6 +85,7 @@ def train_lbfgs(LR, msg):
                 optimizer.zero_grad()
                 loss.backward()
                 return loss
+
             optimizer.step(closure)
             bar.show_process()
     bar.close()
@@ -131,7 +131,7 @@ def train_without_closure(optimizer, msg):
     plt.show()
 
 
-#train_without_closure(torch.optim.ASGD(cnn.parameters(), lr=LR))
+# train_without_closure(torch.optim.ASGD(cnn.parameters(), lr=LR))
 train_lbfgs(0.1, 'Use LBFGS AND LR = 0.1')
 list_pred = []
 list_true = []
