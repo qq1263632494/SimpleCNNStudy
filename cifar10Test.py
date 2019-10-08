@@ -5,17 +5,17 @@ import torchvision
 from torch import nn
 from torch.utils.data import DataLoader
 
-from NetWorks import CNN3, CNN4
+from MakeCNNNetWorks import VGG, cfg
 
 transform = torchvision.transforms.Compose(
     [torchvision.transforms.ToTensor(), torchvision.transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]
 )
 train_set = torchvision.datasets.CIFAR10(root='./CIFAR10', train=True, download=True, transform=transform)
 test_set = torchvision.datasets.CIFAR10(root='./CIFAR10', train=False, download=True, transform=transform)
-BATCH_SIZE = 25000
-BATCH_SIZE_Test = 10000
+BATCH_SIZE = 12500
+BATCH_SIZE_Test = 1000
 
-LR = 0.05
+LR = 0.0005
 EPOCH = 50
 train_loader = DataLoader(train_set, batch_size=BATCH_SIZE, shuffle=False)
 test_loader = DataLoader(test_set, batch_size=BATCH_SIZE_Test, shuffle=False)
@@ -34,7 +34,7 @@ def draw(obj):
 print(len(train_set))
 print(len(test_set))
 
-cnn = CNN3()
+cnn = VGG(cfg=cfg['SimpleVGG'], in_channels=3, x=32, batch_norm=False, num_classes=10)
 cnn = cnn.cuda()
 print(cnn)
 
@@ -95,8 +95,6 @@ def train_lbfgs(LR, msg):
     print(list_y[0])
     print(list_x[-1])
     print(list_y[-1])
-    plt.title(msg)
-    plt.text(.64, 7, list_y[-1])
     plt.plot(list_x, list_y)
     plt.show()
 
@@ -128,11 +126,12 @@ def train_without_closure(optimizer, msg):
     print(list_y[-1])
     plt.title(msg)
     plt.plot(list_x, list_y)
-    plt.show()
+    plt.savefig('pic.png', bbox_inches='tight')
+    # plt.show()
 
 
-# train_without_closure(torch.optim.ASGD(cnn.parameters(), lr=LR))
-train_lbfgs(1.2, 'CNN3 Use LBFGS AND LR = 1.2 EPOCH = 5')
+train_without_closure(torch.optim.Adam(cnn.parameters(), lr=LR), 'haha')
+# train_lbfgs(0.00003, 'CNN3 Use LBFGS AND LR = 0.00003 EPOCH = 5')
 list_pred = []
 list_true = []
 for step, (t_x, t_y) in enumerate(test_loader):
@@ -141,8 +140,6 @@ for step, (t_x, t_y) in enumerate(test_loader):
     pred_y = torch.max(test_output, 1)[1].data.cpu().numpy().squeeze()
     list_pred.append(pred_y)
     list_true.append(t_y)
-print(list_pred[0])
-print(list_true[0])
 from sklearn.metrics import accuracy_score
 
 print(accuracy_score(y_true=list_true[0], y_pred=list_pred[0]))
