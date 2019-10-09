@@ -2,7 +2,7 @@
 import sys, time
 
 
-class ShowProcess():
+class ShowProcess:
     """
     显示处理进度的类
     调用该类相关函数即可实现处理进度的显示
@@ -17,6 +17,7 @@ class ShowProcess():
         self.i = 0
         self.start = time.time()
         self.last_time = time.time()
+        print('\033[1;36m开始训练\033[0m')
 
     # 显示函数，根据当前的处理进度i显示进度
     # 效果为[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>]100.00%
@@ -37,7 +38,7 @@ class ShowProcess():
         sys.stdout.flush()
         self.last_time = time.time()
 
-    def close(self, words='done, total time is '):
+    def close(self, words='训练完成,共计：'):
         print('')
-        print(words + str(time.time() - self.start) + ' 秒.')
+        print('\033[1;36m' + words + str(time.time() - self.start) + ' 秒.' + '\033[0m')
         self.i = 0

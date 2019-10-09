@@ -29,9 +29,11 @@ def add_layers(cfg, in_channels, x, batch_norm=False):
             in_channels = v
     return nn.Sequential(*layers), x, in_channels
 
+
 cfg = {
-    'SimpleVGG': [16, 'M', 32, 'M', 64, 64, 'M', 128, 128, 128]
+    'SimpleVGG': [16, 'M', 32, 'M', 64, 64, 'M', 128, 128, 128, 'M', 256, 256]
 }
+
 
 class VGG(nn.Module):
     def __init__(self, cfg, in_channels, x, batch_norm, num_classes=10):
@@ -39,11 +41,12 @@ class VGG(nn.Module):
         layers, width, channels = add_layers(cfg=cfg, in_channels=in_channels, x=x, batch_norm=batch_norm)
         self.layers = layers
         self.classifier = nn.Sequential(
-            nn.Linear(channels*width*width, 128),
+            nn.Linear(channels * width * width, 512),
             nn.ReLU(True),
             nn.Dropout(),
-            nn.Linear(128, num_classes)
+            nn.Linear(512, num_classes)
         )
+
     def forward(self, x):
         x = self.layers(x)
         x = x.view(x.size(0), -1)

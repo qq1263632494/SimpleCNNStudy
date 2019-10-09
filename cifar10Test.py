@@ -6,17 +6,18 @@ from torch import nn
 from torch.utils.data import DataLoader
 
 from MakeCNNNetWorks import VGG, cfg
+from MakeResNet import get_ResNet18
 
 transform = torchvision.transforms.Compose(
     [torchvision.transforms.ToTensor(), torchvision.transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]
 )
 train_set = torchvision.datasets.CIFAR10(root='./CIFAR10', train=True, download=True, transform=transform)
 test_set = torchvision.datasets.CIFAR10(root='./CIFAR10', train=False, download=True, transform=transform)
-BATCH_SIZE = 12500
-BATCH_SIZE_Test = 1000
+BATCH_SIZE = 125
+BATCH_SIZE_Test = 250
 
-LR = 0.0005
-EPOCH = 50
+LR = 0.005
+EPOCH = 5
 train_loader = DataLoader(train_set, batch_size=BATCH_SIZE, shuffle=False)
 test_loader = DataLoader(test_set, batch_size=BATCH_SIZE_Test, shuffle=False)
 classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
@@ -34,7 +35,8 @@ def draw(obj):
 print(len(train_set))
 print(len(test_set))
 
-cnn = VGG(cfg=cfg['SimpleVGG'], in_channels=3, x=32, batch_norm=False, num_classes=10)
+#cnn = VGG(cfg=cfg['SimpleVGG'], in_channels=3, x=32, batch_norm=False, num_classes=10)
+cnn = get_ResNet18()
 cnn = cnn.cuda()
 print(cnn)
 
@@ -96,7 +98,8 @@ def train_lbfgs(LR, msg):
     print(list_x[-1])
     print(list_y[-1])
     plt.plot(list_x, list_y)
-    plt.show()
+    plt.savefig('pic.png', bbox_inches='tight')
+    # plt.show()
 
 
 def train_without_closure(optimizer, msg):
@@ -105,7 +108,7 @@ def train_without_closure(optimizer, msg):
     list_y = []
     train_loader.__setattr__('shuffle', True)
     from progressbar import ShowProcess
-    bar = ShowProcess(EPOCH)
+    bar = ShowProcess(EPOCH * len(train_set) / BATCH_SIZE)
     for t in range(EPOCH):
         for step, (b_x, b_y) in enumerate(train_loader):
             b_x_t = b_x.cuda()
@@ -118,7 +121,7 @@ def train_without_closure(optimizer, msg):
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-        bar.show_process()
+            bar.show_process()
     bar.close()
     print(list_x[0])
     print(list_y[0])
@@ -131,7 +134,7 @@ def train_without_closure(optimizer, msg):
 
 
 train_without_closure(torch.optim.Adam(cnn.parameters(), lr=LR), 'haha')
-# train_lbfgs(0.00003, 'CNN3 Use LBFGS AND LR = 0.00003 EPOCH = 5')
+# train_lbfgs(0.01, 'CNN3 Use LBFGS AND LR = 0.00003 EPOCH = 5')
 list_pred = []
 list_true = []
 for step, (t_x, t_y) in enumerate(test_loader):
